@@ -1,12 +1,13 @@
 from typing import Final
 import config
-from interactions.keyboards import (start_keyboard, location_keyboard)
+from interactions.keyboards import (start_keyboard, location_keyboard, choose_location)
 from interactions.get_message_info import (get_message_info, get_location)
 from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import (
     Application,
     CommandHandler,
     MessageHandler,
+    CallbackQueryHandler,
     filters,
     ContextTypes,
 )
@@ -32,11 +33,20 @@ async def custom_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Replies
 
+async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    query.answer()
+
+    work_location = query.data
+
+    await update.message.reply_text("Отправьте вашу локацию", reply_markup=location_keyboard())
+
 def handle_response(text:str) -> str:
     proccessed:str = text.lower()
     if 'начать смену' in proccessed:
-        return "Удачного дня"
+        return "Выберите место работы"
     
+
     return "No command found"
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -47,7 +57,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'User ({update.message.chat.id}): "{text}"')
     response: str = handle_response(text)
 
-    await update.message.reply_text(response, reply_markup=location_keyboard())
+    await update.message.reply_text(response, reply_markup=choose_location())
 
 async def location_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
@@ -73,6 +83,7 @@ if __name__ == '__main__':
     #Replies
     app.add_handler(MessageHandler(filters.TEXT, handle_message))
     app.add_handler(MessageHandler(filters.LOCATION, location_message))
+    app.add_handler(CallbackQueryHandler(location))
 
     #Errors
     app.add_error_handler(error)

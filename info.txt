@@ -1,4 +1,3 @@
 Имя: Anvar None
- Username: None 
- Время: 2024-12-11 10:39:15 
-Location: 43.46916 -91.007465
+Username: None 
+Время: 2024-12-19 11:58:55 

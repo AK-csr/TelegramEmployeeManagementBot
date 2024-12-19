@@ -10,7 +10,7 @@ def get_message_info(update: Update):
     tz = pytz.timezone(MY_TIMEZONE)
     message_time = update.message.date
     f = open("info.txt", "w")
-    f.write(f"Имя: {first_name} {last_name}\n Username: {username} \n Время: {message_time.now(tz).strftime('%Y-%m-%d %H:%M:%S')} \n")
+    f.write(f"Имя: {first_name} {last_name}\nUsername: {username} \nВремя: {message_time.now(tz).strftime('%Y-%m-%d %H:%M:%S')} \n")
     f.close()
 
 def get_location(update:Update):
