@@ -33,14 +33,20 @@ async def custom_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Replies
 
+#  Choose Location 
 async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
-    query.answer()
+    await query.answer()
 
-    work_location = query.data
+    context.user_data["selected_location"] = query.data
 
-    await update.message.reply_text("Отправьте вашу локацию", reply_markup=location_keyboard())
+    await query.edit_message_text(
+        text=f"Вы выбрали {query.data}. Отправьте вашу локацию:"
+    )
+    await query.message.reply_text("Нажмите чтобы отправить вашу локацию:", reply_markup=location_keyboard())
 
+
+#   Start command message
 def handle_response(text:str) -> str:
     proccessed:str = text.lower()
     if 'начать смену' in proccessed:
@@ -49,6 +55,7 @@ def handle_response(text:str) -> str:
 
     return "No command found"
 
+#   Start command logic
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     get_message_info(update)
@@ -59,10 +66,23 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(response, reply_markup=choose_location())
 
+#   Location handler
 async def location_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     get_location(update)
 
+    user_location = update.message.location
+    selected_location = context.user_data.get("selected_location")
+
+    if not user_location or not selected_location:
+        await update.message.reply_text("Something went wrong. Please start again.")
+        return
+    
+    await update.message.reply_text(
+    f"You selected {selected_location}. "
+    f"Your current location is:\nLatitude: {user_location.latitude}, Longitude: {user_location.longitude}.\n"
+    "You can now process further!"
+    )
     await update.message.reply_text("Ваша локация отправлена")
 
 # Errors
