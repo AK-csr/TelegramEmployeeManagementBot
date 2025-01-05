@@ -1,6 +1,7 @@
 from telegram import Update
 import pytz
 from config import MY_TIMEZONE
+from googlesheets.sheets import accessWorkerSheet
 
 def get_message_info(update: Update):
     user = update.message.from_user
@@ -8,10 +9,11 @@ def get_message_info(update: Update):
     last_name = user.last_name
     username = user.username
     tz = pytz.timezone(MY_TIMEZONE)
-    message_time = update.message.date
-    f = open("info.txt", "w")
-    f.write(f"Имя: {first_name} {last_name}\nUsername: {username} \nВремя: {message_time.now(tz).strftime('%Y-%m-%d %H:%M:%S')} \n")
-    f.close()
+    message_time = update.message.date.now(tz).strftime('%Y-%m-%d %H:%M:%S')
+    new_row = [first_name, last_name, username, message_time]
+    sheet = accessWorkerSheet()
+    sheet.append_row(new_row, value_input_option="USER_ENTERED")
+
 
 def get_location(update:Update):
     latitude = update.message.location.latitude

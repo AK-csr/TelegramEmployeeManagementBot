@@ -2,6 +2,8 @@ from typing import Final
 import config
 from interactions.keyboards import (start_keyboard, location_keyboard, choose_location)
 from interactions.get_message_info import (get_message_info, get_location)
+from interactions.location_checker import (check_location)
+from googlesheets.sheets import (accessWorkerSheet)
 from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import (
     Application,
@@ -70,6 +72,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def location_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     get_location(update)
+    check_location(update)
 
     user_location = update.message.location
     selected_location = context.user_data.get("selected_location")
