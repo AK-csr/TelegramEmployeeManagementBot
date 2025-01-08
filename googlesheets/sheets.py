@@ -1,4 +1,8 @@
 import gspread
+import sys
+
+sys.path.append('../telegrambot')
+from config import SHEET_ID
 from google.oauth2.service_account import Credentials
 
 
@@ -7,7 +11,7 @@ def accessWorkerSheet():
     creds = Credentials.from_service_account_file("credentials.json", scopes = scopes)
     client = gspread.authorize(creds)
 
-    sheet_id = "1z4rT4uU4p3c5GwS9PqlZlGbc43bzEdRlteZR6jEHk-A"
+    sheet_id = SHEET_ID
     workbook = client.open_by_key(sheet_id)
     sheet = workbook.worksheet("L1")
     return sheet

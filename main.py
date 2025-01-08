@@ -1,7 +1,7 @@
 from typing import Final
 import config
-from interactions.keyboards import (start_keyboard, location_keyboard, choose_location)
-from interactions.get_message_info import (get_message_info, get_location)
+from interactions.keyboards import (start_keyboard, location_keyboard, choose_location, end_shift)
+from interactions.get_message_info import (get_message_info, get_shift_end)
 from interactions.location_checker import (check_location)
 from googlesheets.sheets import (accessWorkerSheet)
 from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
@@ -60,33 +60,44 @@ def handle_response(text:str) -> str:
 #   Start command logic
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
-    get_message_info(update)
     text:str = update.message.text
-
-    print(f'User ({update.message.chat.id}): "{text}"')
-    response: str = handle_response(text)
-
-    await update.message.reply_text(response, reply_markup=choose_location())
+    proccessed:str = text.lower()
+    
+    if 'начать смену' in proccessed:
+        response = "Выберите место работы"
+        await update.message.reply_text(response, reply_markup=choose_location())
+    elif 'закончить смену' in proccessed:
+        get_shift_end(update)
+        response = "День завершен"
+        await update.message.reply_text(response)
+    else:
+        response = "No command found"
+        await update.message.reply_text(response)
 
 #   Location handler
 async def location_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
-    get_location(update)
-    check_location(update)
 
     user_location = update.message.location
     selected_location = context.user_data.get("selected_location")
 
     if not user_location or not selected_location:
         await update.message.reply_text("Something went wrong. Please start again.")
+        await update.message.reply_text("Нажмите чтобы отправить вашу локацию:", reply_markup=location_keyboard())
         return
     
+    print("before comparrison")
+    if check_location(update) == False:
+        await update.message.reply_text("Вы не находитесь в зоне выбранной локации")
+        return
+    print("location checked")
+
     await update.message.reply_text(
-    f"You selected {selected_location}. "
-    f"Your current location is:\nLatitude: {user_location.latitude}, Longitude: {user_location.longitude}.\n"
-    "You can now process further!"
+    f"Вы выбрали {selected_location}."
     )
-    await update.message.reply_text("Ваша локация отправлена")
+
+    get_message_info(update)
+    
+    await update.message.reply_text("Ваша локация отправлена", reply_markup=end_shift())
 
 # Errors
 

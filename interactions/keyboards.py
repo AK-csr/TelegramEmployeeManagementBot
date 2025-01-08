@@ -14,6 +14,18 @@ def start_keyboard():
     )
     return reply_markup
 
+def end_shift():
+    keyboard = [
+    ["Закончить смену"],
+    ]
+    reply_markup = ReplyKeyboardMarkup(
+        keyboard,
+        resize_keyboard=True,
+        one_time_keyboard=True,
+        input_field_placeholder="Выберите вариант",
+    )
+    return reply_markup
+
 # Ask user for location
 def location_keyboard():
     keyboard = [
