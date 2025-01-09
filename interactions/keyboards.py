@@ -14,6 +14,7 @@ def start_keyboard():
     )
     return reply_markup
 
+# End shift keyboard
 def end_shift():
     keyboard = [
     ["Закончить смену"],
@@ -38,6 +39,7 @@ def location_keyboard():
     input_field_placeholder="Отправить локацию",)
     return reply_markup
 
+# Shows location menu
 def choose_location():
     keyboard = [
         [

@@ -7,6 +7,7 @@ import pytz
 from config import MY_TIMEZONE
 from googlesheets.sheets import accessWorkerSheet
 
+# Saves the user start data to the database
 def get_message_info(update: Update):
     user = update.message.from_user
     first_name = user.first_name
@@ -18,6 +19,7 @@ def get_message_info(update: Update):
     sheet = accessWorkerSheet()
     sheet.append_row(new_row, value_input_option="USER_ENTERED")
 
+# Saves user end time to the database
 def get_shift_end(update:Update):
     name = update.message.from_user.first_name
     tz = pytz.timezone(MY_TIMEZONE)

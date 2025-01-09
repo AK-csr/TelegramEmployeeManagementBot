@@ -5,7 +5,7 @@ sys.path.append('../telegrambot')
 from config import SHEET_ID
 from google.oauth2.service_account import Credentials
 
-
+# Acceses and authorizes the google sheet database. Returns the sheet with the information
 def accessWorkerSheet():
     scopes = ["https://www.googleapis.com/auth/spreadsheets"]
     creds = Credentials.from_service_account_file("credentials.json", scopes = scopes)

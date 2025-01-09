@@ -35,7 +35,7 @@ async def custom_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Replies
 
-#  Choose Location 
+#  Choose Location . User enters location from selected lists of locations
 async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -47,17 +47,7 @@ async def location(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
     await query.message.reply_text("Нажмите чтобы отправить вашу локацию:", reply_markup=location_keyboard())
 
-
-#   Start command message
-def handle_response(text:str) -> str:
-    proccessed:str = text.lower()
-    if 'начать смену' in proccessed:
-        return "Выберите место работы"
-    
-
-    return "No command found"
-
-#   Start command logic
+#   Start command logic. Analyzes messages send by user
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     text:str = update.message.text
@@ -74,7 +64,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         response = "No command found"
         await update.message.reply_text(response)
 
-#   Location handler
+#   Location handler. Checks the location of the user
 async def location_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_location = update.message.location
